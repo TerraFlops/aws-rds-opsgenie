@@ -98,7 +98,7 @@ resource "opsgenie_integration_action" "alarm" {
     entity = var.opsgenie_entity
     user = var.opsgenie_user
     tags = [
-      "ECS",
+      "RDS",
       var.metric_name
     ]
     priority = var.opsgenie_priority
