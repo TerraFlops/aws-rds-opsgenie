@@ -1,10 +1,5 @@
-variable "ecs_task_name" {
-  description = "Name of ECS task"
-  type = string
-}
-
-variable "ecs_cluster_name" {
-  description = "Name of ECS cluster"
+variable "db_instance_identifier" {
+  description = "Database instance identifier"
   type = string
 }
 

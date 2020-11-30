@@ -1,11 +1,11 @@
 # Convert integration name into snake case
 locals {
-  ecs_task_name = join("", [for element in split("_", lower(var.ecs_task_name)) : title(element)])
+  db_instance_identifier = join("", [for element in split("_", lower(var.db_instance_identifier)) : title(element)])
   opsgenie_responding_teams = setunion(var.opsgenie_responding_teams, toset([var.opsgenie_owner_team]))
 
   # Create alarm name based on the trigger condition (hopefully prevent duplicates)
   # (e.g. PaymentGatewayAverageApproximateNumberOfMessagesVisibleGreaterThanOrEqualToThreshold10000In5Periods)
-  alarm_name = var.alarm_name == null ? "${local.ecs_task_name}Ecs${var.statistic}${var.metric_name}${var.comparison}${var.threshold}In${var.evaluation_periods}PeriodsOf${var.period}" : var.alarm_name
+  alarm_name = var.alarm_name == null ? "${local.db_instance_identifier}Rds${var.statistic}${var.metric_name}${var.comparison}${var.threshold}In${var.evaluation_periods}PeriodsOf${var.period}" : var.alarm_name
 }
 
 # Retrieve the requested Opsgenie users
@@ -31,7 +31,7 @@ data "aws_caller_identity" "default" {
 
 # Create Opsgenie API integration
 resource "opsgenie_api_integration" "opsgenie_integration" {
-  name = "Terraform${data.aws_caller_identity.default.account_id}EcsIntegration${local.alarm_name}"
+  name = "Terraform${data.aws_caller_identity.default.account_id}RdsIntegration${local.alarm_name}"
   type = "AmazonSns"
   owner_team_id = data.opsgenie_team.opsgenie_owner_team.id
   # Attach responders to the integration
@@ -66,7 +66,7 @@ resource "aws_sns_topic_subscription" "message_age_alarm" {
 
 # Create CloudWatch alarm
 resource "aws_cloudwatch_metric_alarm" "alarm" {
-  namespace = "AWS/ECS"
+  namespace = "AWS/RDS"
   alarm_name = local.alarm_name
   comparison_operator = var.comparison
   metric_name = var.metric_name
@@ -75,10 +75,9 @@ resource "aws_cloudwatch_metric_alarm" "alarm" {
   period = var.period
   statistic = var.statistic
   threshold = var.threshold
-  # Link to the requested ECS task/cluster
+  # Link to the requested RDS instance
   dimensions = {
-    ServiceName = var.ecs_task_name
-    ClusterName = var.ecs_cluster_name
+    DBInstanceIdentifier = var.db_instance_identifier
   }
   # Trigger the SNS topic on alarm
   alarm_actions = [
