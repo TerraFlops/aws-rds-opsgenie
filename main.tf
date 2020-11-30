@@ -1,6 +1,6 @@
 # Convert integration name into snake case
 locals {
-  db_instance_identifier = join("", [for element in split("_", lower(var.db_instance_identifier)) : title(element)])
+  db_instance_identifier = join("", [for element in split("-", lower(var.db_instance_identifier)) : title(element)])
   opsgenie_responding_teams = setunion(var.opsgenie_responding_teams, toset([var.opsgenie_owner_team]))
 
   # Create alarm name based on the trigger condition (hopefully prevent duplicates)
