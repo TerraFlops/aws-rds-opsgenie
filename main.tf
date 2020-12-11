@@ -102,12 +102,7 @@ resource "opsgenie_integration_action" "alarm" {
     ]
     priority = var.opsgenie_priority
     filter {
-      type = "match-all-conditions"
-      conditions {
-        field = "reason"
-        operation = "equals"
-        expected_value = "ALERT_OPENED"
-      }
+      type = "match-all"
     }
   }
 }
