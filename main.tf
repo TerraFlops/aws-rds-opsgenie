@@ -91,8 +91,8 @@ resource "opsgenie_integration_action" "alarm" {
   create {
     alias = local.alarm_name
     name = "Alarm Triggered"
-    message = "The ${lower(var.statistic)} ${var.metric_name} was ${var.comparison} of ${var.threshold} for ${var.evaluation_periods} evaluation periods of ${var.period} seconds"
-    description = var.description == null ? "The ${lower(var.statistic)} ${var.metric_name} was ${var.comparison} of ${var.threshold} for ${var.evaluation_periods} evaluation periods of ${var.period} seconds" : var.description
+    description = "The ${lower(var.statistic)} ${var.metric_name} was ${var.comparison} of ${var.threshold} for ${var.evaluation_periods} evaluation periods of ${var.period} seconds"
+    message = var.description == null ? "The ${lower(var.statistic)} ${var.metric_name} was ${var.comparison} of ${var.threshold} for ${var.evaluation_periods} evaluation periods of ${var.period} seconds" : var.description
     ignore_responders_from_payload = true
     entity = var.opsgenie_entity
     user = var.opsgenie_user
