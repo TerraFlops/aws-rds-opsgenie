@@ -54,6 +54,7 @@ resource "opsgenie_api_integration" "opsgenie_integration" {
 # Create an SNS topic for the alarm
 resource "aws_sns_topic" "alarm" {
   name = local.alarm_name
+  kms_master_key_id = var.sns_topic_kms_master_key_id
 }
 
 # Create HTTPS subscription from OpsGenie to the SNS topic
